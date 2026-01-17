@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CCR PEPP & Pawning Spiels</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root {
+  --green-dark: #065f46;
+  --green-main: #059669;
+  --green-light: #d1fae5;
+  --bg: #f0fdf4;
+  --card: #ffffff;
+  --text: #064e3b;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  padding: 20px;
+  color: var(--text);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--green-dark);
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 1px solid #a7f3d0;
+  margin-bottom: 10px;
+}
+
+.loader {
+  display: none;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #d1fae5;
+  border-top: 4px solid var(--green-main);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+.loader-text {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+.spiel-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.spiel {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.star {
+  font-size: 22px;
+  cursor: pointer;
+  color: #9ca3af;
+}
+
+.star.active {
+  color: #facc15;
+}
+
+.response {
+  background: var(--green-light);
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.copy-content {
+  white-space: pre-wrap;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.copy-btn {
+  background: var(--green-main);
+  color: white;
+}
+
+.copy-btn:hover {
+  background: var(--green-dark);
+}
+
+.copied {
+  font-size: 12px;
+  margin-top: 5px;
+  display: none;
+}
+
+footer {
+  text-align: center;
+  padding: 12px;
+  font-size: 13px;
+  color: #064e3b;
+  margin-top: 20px;
+  border-top: 1px solid #a7f3d0;
+}
+</style>
+</head>
+
+<body>
+
+<h2>CCR PEPP & Pawning Spiels</h2>
+
+<input type="text" id="search" placeholder="Search Spiel Name...">
+
+<div class="loader" id="loader">
+  <div class="spinner"></div>
+  <div class="loader-text">Searching spiels...</div>
+</div>
+
+<div id="results"></div>
+
+<footer>
+  Form designed by CCR John Ramos and CCR Ali Francisco
+</footer>
+
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx8g5AF7YL_7DhPXPpAr1xcah8VuWRg8_J7hi8KAmFfZzia68Z5sIYyMNeCDdpAl0RFwA/exec";
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+let typingTimer;
+const TYPING_DELAY = 300;
+
+/* LIVE SEARCH WHILE TYPING */
+document.getElementById("search").addEventListener("input", () => {
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(searchSpiel, TYPING_DELAY);
+});
+
+function searchSpiel() {
+  const q = document.getElementById("search").value;
+  const loader = document.getElementById("loader");
+  const results = document.getElementById("results");
+
+  loader.style.display = "block";
+  results.innerHTML = "";
+
+  fetch(`${WEB_APP_URL}?q=${encodeURIComponent(q)}`)
+    .then(res => res.json())
+    .then(data => {
+      loader.style.display = "none";
+      renderResults(data);
+    })
+    .catch(() => loader.style.display = "none");
+}
+
+function renderResults(data) {
+  const container = document.getElementById("results");
+  container.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    container.innerHTML = "<p>No results found.</p>";
+    return;
+  }
+
+  data.sort((a, b) =>
+    favorites.includes(b.spiel) - favorites.includes(a.spiel)
+  );
+
+  data.forEach(item => {
+    const isFav = favorites.includes(item.spiel);
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="spiel-row">
+        <div class="spiel">${item.spiel}</div>
+        <div class="star ${isFav ? "active" : ""}"
+             onclick="toggleFavorite('${item.spiel}')">★</div>
+      </div>
+
+      <div class="response">
+        <div class="label">Tagalog Response</div>
+        <div class="copy-content">${formatText(item.tagalog)}</div>
+        <div class="actions">
+          <button class="copy-btn" onclick="copyOnly(this)">Copy Tagalog</button>
+        </div>
+        <div class="copied">Copied!</div>
+      </div>
+
+      <div class="response">
+        <div class="label">English Response</div>
+        <div class="copy-content">${formatText(item.english)}</div>
+        <div class="actions">
+          <button class="copy-btn" onclick="copyOnly(this)">Copy English</button>
+        </div>
+        <div class="copied">Copied!</div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function copyOnly(btn) {
+  const content = btn.closest(".response").querySelector(".copy-content");
+
+  const range = document.createRange();
+  range.selectNodeContents(content);
+
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  document.execCommand("copy");
+  selection.removeAllRanges();
+
+  const copied = btn.closest(".response").querySelector(".copied");
+  copied.style.display = "block";
+  setTimeout(() => copied.style.display = "none", 1000);
+}
+
+function toggleFavorite(spiel) {
+  favorites = favorites.includes(spiel)
+    ? favorites.filter(f => f !== spiel)
+    : [...favorites, spiel];
+
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+  searchSpiel();
+}
+
+function formatText(text) {
+  if (!text) return "";
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\n/g, "<br>");
+}
+</script>
+
+</body>
+</html>
