@@ -182,9 +182,16 @@ document.getElementById("search").addEventListener("input", () => {
 });
 
 function searchSpiel() {
-  const q = document.getElementById("search").value;
+  const q = document.getElementById("search").value.trim();
   const loader = document.getElementById("loader");
   const results = document.getElementById("results");
+
+  // If query is empty, hide loader and clear results
+  if (!q) {
+    loader.style.display = "none";
+    results.innerHTML = "";
+    return;
+  }
 
   loader.style.display = "block";
   results.innerHTML = "";
