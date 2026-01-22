@@ -28,7 +28,37 @@ h2 {
   color: var(--green-dark);
 }
 
-input {
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #e5f7ed;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.tab.active {
+  background: var(--green-main);
+  color: white;
+}
+
+#tabContent {
+  margin-top: 10px;
+  min-height: 300px;
+  overflow-y: auto;
+}
+
+/* Search Input */
+#search {
   width: 100%;
   padding: 12px;
   font-size: 15px;
@@ -37,10 +67,11 @@ input {
   margin-bottom: 10px;
 }
 
+/* Loader */
 .loader {
-  display: none;
   text-align: center;
   margin: 10px 0;
+  display: none;
 }
 
 .spinner {
@@ -153,33 +184,79 @@ input {
   display: none;
 }
 
-/* Tabs */
-.tabs {
+/* Memo Cards */
+.memo-card {
+  background: var(--card);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.tab {
-  flex: 1;
-  padding: 10px;
-  text-align: center;
-  border-radius: 10px;
-  cursor: pointer;
-  background: #e5f7ed;
+.memo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.memo-icon {
+  font-size: 28px;
+}
+
+.memo-title {
   font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.memo-sub {
+  font-size: 0.8rem;
+  color: #047857;
+}
+
+/* PDF Viewer */
+#pdfToolbar {
+  display: none;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+#pdfToolbar button {
+  padding: 5px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  background: var(--green-main);
   transition: background 0.2s;
 }
 
-.tab.active {
-  background: var(--green-main);
-  color: white;
+#pdfToolbar button:hover {
+  background: var(--green-dark);
 }
 
-#tabContent {
-  margin-top: 10px;
-  min-height: 200px;
-  overflow-y: auto;
+#pdfTitle {
+  font-weight: bold;
+  color: var(--green-dark);
+}
+
+#pdfViewer {
+  width: 100%;
+  height: 600px;
+  border: 1px solid #d1fae5;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: none;
+  transition: all 0.3s;
+  transform-origin: top left;
 }
 
 /* Footer */
@@ -187,19 +264,19 @@ footer {
   text-align: center;
   padding: 10px;
   font-size: 12px;
-  color: var(--green-dark);
   margin-top: 20px;
   border-top: 1px solid #a7f3d0;
 }
 
 /* Responsive */
 @media (max-width: 600px) {
-  input { font-size: 14px; }
-  .spiel { font-size: 0.9rem; }
-  .response { font-size: 0.85rem; }
+  .memo-title, .spiel { font-size: 0.85rem; }
+  .memo-sub { font-size: 0.75rem; }
+  #pdfViewer { height: 400px; }
 }
 </style>
 </head>
+
 <body>
 
 <h2>CCR PEPP & Pawning Spiels</h2>
@@ -208,25 +285,76 @@ footer {
 <div class="tabs">
   <div class="tab active" data-tab="search">Search Spiels</div>
   <div class="tab" data-tab="money">Money Changer</div>
-  <div class="tab" data-tab="gold">Palawan Gold and Appraisal Rate</div>
+  <div class="tab" data-tab="gold">Palawan Gold</div>
+  <div class="tab" data-tab="memo">Memo & Advisory</div>
 </div>
 
 <div id="tabContent">
-  <!-- Search Spiels Tab -->
+  <!-- Search Tab -->
   <div id="searchTab">
     <input type="text" id="search" placeholder="Search Spiel Name...">
     <div class="loader" id="loader">
       <div class="spinner"></div>
       <div class="loader-text">Searching spiels...</div>
     </div>
-    <div id="results"></div>
+    <div id="results" style="max-height:600px; overflow-y:auto;"></div>
   </div>
 
-  <!-- Money Changer Tab -->
-  <iframe id="moneyTab" src="https://jrguirjenccdpps-hue.github.io/Money-Changer/" style="width:100%; height:500px; display:none; border:none;"></iframe>
+  <!-- Money Changer -->
+  <iframe id="moneyTab" src="https://jrguirjenccdpps-hue.github.io/Money-Changer/"
+    style="width:100%; height:500px; display:none; border:none;"></iframe>
 
-  <!-- Palawan Gold Tab -->
-  <iframe id="goldTab" src="https://jrguirjenccdpps-hue.github.io/Palawan-Gold-Price/" style="width:100%; height:500px; display:none; border:none;"></iframe>
+  <!-- Palawan Gold -->
+  <iframe id="goldTab" src="https://jrguirjenccdpps-hue.github.io/Palawan-Gold-Price/"
+    style="width:100%; height:500px; display:none; border:none;"></iframe>
+
+  <!-- Memo & Advisory -->
+  <div id="memoTab" style="display:none;">
+    <!-- PDF Toolbar -->
+    <div id="pdfToolbar">
+      <div id="pdfTitle"></div>
+      <div>
+        <button onclick="closePDF()">Close</button>
+        <button onclick="zoomPDF(1.2)">Zoom In</button>
+        <button onclick="zoomPDF(0.8)">Zoom Out</button>
+      </div>
+    </div>
+    <!-- PDF Viewer -->
+    <iframe id="pdfViewer"></iframe>
+
+    <!-- Memo Cards -->
+    <div class="memo-card" onclick="showPDF('https://drive.google.com/file/d/1k-IFfleDsUp4SGbqmzLWN6HcyRS37sbr/preview','Annex C – Guidelines for Authorized Representatives')">
+      <div class="memo-icon">📄</div>
+      <div>
+        <div class="memo-title">Annex C – Guidelines for Authorized Representatives</div>
+        <div class="memo-sub">Effective Sept 1, 2023</div>
+      </div>
+    </div>
+
+    <div class="memo-card" onclick="showPDF('https://drive.google.com/file/d/1xCpK6LulqyFfW1wC6U5rcuy6Alz0RaJ9/preview','Annex D – ID Requirements')">
+      <div class="memo-icon">📄</div>
+      <div>
+        <div class="memo-title">Annex D – ID Requirements</div>
+        <div class="memo-sub">Effective June 1, 2023</div>
+      </div>
+    </div>
+
+    <div class="memo-card" onclick="showPDF('https://drive.google.com/file/d/1f_pHNFTgN3n4Af50V-IOI3PXUrb6_M5l/preview','GM 006, S2023 – International Remittance Partners')">
+      <div class="memo-icon">📄</div>
+      <div>
+        <div class="memo-title">GM 006, S2023 – International Remittance Partners</div>
+        <div class="memo-sub">Attachment</div>
+      </div>
+    </div>
+
+    <div class="memo-card" onclick="showPDF('https://drive.google.com/file/d/1BDeVgr4arXJmdgQoTIcRSZA3cSuBC_cX/preview','GM 020, S2023 – Western Union Registered Branches')">
+      <div class="memo-icon">📄</div>
+      <div>
+        <div class="memo-title">GM 020, S2023 – Western Union Registered Branches</div>
+        <div class="memo-sub">Attachment</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <footer>
@@ -234,16 +362,11 @@ footer {
 </footer>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx8g5AF7YL_7DhPXPpAr1xcah8VuWRg8_J7hi8KAmFfZzia68Z5sIYyMNeCDdpAl0RFwA/exec";
-let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-let typingTimer;
-const TYPING_DELAY = 300;
-
-// Tab functionality
 const tabs = document.querySelectorAll(".tab");
 const searchTab = document.getElementById("searchTab");
 const moneyTab = document.getElementById("moneyTab");
 const goldTab = document.getElementById("goldTab");
+const memoTab = document.getElementById("memoTab");
 
 tabs.forEach(tab => {
   tab.addEventListener("click", () => {
@@ -253,10 +376,43 @@ tabs.forEach(tab => {
     searchTab.style.display = tab.dataset.tab === "search" ? "block" : "none";
     moneyTab.style.display = tab.dataset.tab === "money" ? "block" : "none";
     goldTab.style.display = tab.dataset.tab === "gold" ? "block" : "none";
+    memoTab.style.display = tab.dataset.tab === "memo" ? "block" : "none";
   });
 });
 
-/* LIVE SEARCH WHILE TYPING */
+// PDF Viewer
+let currentScale = 1;
+
+function showPDF(url, title) {
+  const viewer = document.getElementById("pdfViewer");
+  const toolbar = document.getElementById("pdfToolbar");
+  document.getElementById("pdfTitle").textContent = title;
+  viewer.src = url;
+  viewer.style.display = "block";
+  toolbar.style.display = "flex";
+  currentScale = 1;
+  viewer.style.transform = `scale(${currentScale})`;
+}
+
+function zoomPDF(factor) {
+  const viewer = document.getElementById("pdfViewer");
+  currentScale *= factor;
+  viewer.style.transform = `scale(${currentScale})`;
+}
+
+function closePDF() {
+  const viewer = document.getElementById("pdfViewer");
+  viewer.style.display = "none";
+  viewer.src = "";
+  document.getElementById("pdfToolbar").style.display = "none";
+}
+
+/* Live Search for Spiels */
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx8g5AF7YL_7DhPXPpAr1xcah8VuWRg8_J7hi8KAmFfZzia68Z5sIYyMNeCDdpAl0RFwA/exec";
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+let typingTimer;
+const TYPING_DELAY = 300;
+
 document.getElementById("search").addEventListener("input", () => {
   clearTimeout(typingTimer);
   typingTimer = setTimeout(searchSpiel, TYPING_DELAY);
@@ -266,15 +422,13 @@ function searchSpiel() {
   const q = document.getElementById("search").value.trim();
   const loader = document.getElementById("loader");
   const results = document.getElementById("results");
-
+  results.innerHTML = "";
   if (!q) {
     loader.style.display = "none";
-    results.innerHTML = "";
     return;
   }
 
   loader.style.display = "block";
-  results.innerHTML = "";
 
   fetch(`${WEB_APP_URL}?q=${encodeURIComponent(q)}`)
     .then(res => res.json())
@@ -297,7 +451,6 @@ function renderResults(data) {
 
   data.forEach(item => {
     const isFav = favorites.includes(item.spiel);
-
     const card = document.createElement("div");
     card.className = "card";
 
@@ -325,7 +478,6 @@ function renderResults(data) {
         </div>
       </div>
     `;
-
     container.appendChild(card);
   });
 }
