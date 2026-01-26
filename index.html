@@ -4,31 +4,284 @@
 <meta charset="UTF-8">
 <title>CCR PEPP & Pawning Spiels</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
-body{font-family:Segoe UI;background:#f0fdf4;padding:20px;color:#064e3b}
-h2{text-align:center;margin-bottom:20px}
-.tabs{display:flex;gap:10px;margin-bottom:10px}
-.tab{flex:1;padding:10px;text-align:center;border-radius:10px;cursor:pointer;background:#e5f7ed;font-weight:bold;transition:0.2s}
-.tab.active{background:#059669;color:#fff}
-#tabContent{min-height:300px}
-#search{width:100%;padding:12px;border-radius:10px;border:1px solid #a7f3d0;margin-bottom:10px}
-.loader{display:none;text-align:center;margin:10px 0}
-.spinner{width:36px;height:36px;border:4px solid #d1fae5;border-top:4px solid #059669;border-radius:50%;animation:spin 1s linear infinite;margin:auto}
-.loader-text{margin-top:6px;font-size:13px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.card{background:#fff;border-radius:12px;padding:15px;margin-bottom:12px;box-shadow:0 4px 8px rgba(0,0,0,0.08)}
-.logout{position:fixed;top:10px;right:10px;background:#dc2626;color:#fff;border:none;padding:6px 10px;border-radius:6px;display:none;cursor:pointer}
-#loginOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;opacity:0;transition:0.3s;pointer-events:none}
-#loginBox{background:#fff;padding:25px;border-radius:12px;width:300px;transform:translateY(-30px);transition:0.3s}
-#loginOverlay.show{opacity:1;pointer-events:auto}
-#loginOverlay.show #loginBox{transform:translateY(0)}
+:root {
+  --green-dark: #065f46;
+  --green-main: #059669;
+  --green-light: #d1fae5;
+  --bg: #f0fdf4;
+  --card: #ffffff;
+  --text: #064e3b;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  padding: 20px;
+  color: var(--text);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--green-dark);
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #e5f7ed;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.tab.active {
+  background: var(--green-main);
+  color: white;
+}
+
+#tabContent {
+  margin-top: 10px;
+  min-height: 300px;
+  overflow-y: auto;
+}
+
+/* Search Input */
+#search {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: 1px solid #a7f3d0;
+  margin-bottom: 10px;
+}
+
+/* Loader */
+.loader {
+  text-align: center;
+  margin: 10px 0;
+  display: none;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 4px solid #d1fae5;
+  border-top: 4px solid var(--green-main);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+.loader-text {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Search Results Cards */
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.spiel-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.spiel {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+.star {
+  font-size: 20px;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: color 0.2s;
+}
+
+.star.active { color: #facc15; }
+
+.response-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.response {
+  background: #f0fdf4;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  position: relative;
+}
+
+.label {
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: var(--green-dark);
+}
+
+.copy-content {
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.copy-btn {
+  padding: 5px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  background: var(--green-main);
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.copy-btn:hover { background: var(--green-dark); }
+
+.copied {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 11px;
+  color: #059669;
+  display: none;
+}
+
+/* Memo Cards */
+.memo-card {
+  background: var(--card);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.memo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.memo-icon {
+  font-size: 28px;
+}
+
+.memo-title {
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.memo-sub {
+  font-size: 0.8rem;
+  color: #047857;
+}
+
+/* PDF Viewer */
+#pdfToolbar {
+  display: none;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+#pdfToolbar button {
+  padding: 5px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  background: var(--green-main);
+  transition: background 0.2s;
+}
+
+#pdfToolbar button:hover {
+  background: var(--green-dark);
+}
+
+#pdfTitle {
+  font-weight: bold;
+  color: var(--green-dark);
+}
+
+#pdfViewer {
+  width: 100%;
+  height: 600px;
+  border: 1px solid #d1fae5;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: none;
+  transition: all 0.3s;
+  transform-origin: top left;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 12px;
+  margin-top: 20px;
+  border-top: 1px solid #a7f3d0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .memo-title, .spiel { font-size: 0.85rem; }
+  .memo-sub { font-size: 0.75rem; }
+  #pdfViewer { height: 400px; }
+}
 </style>
 </head>
+
 <body>
 
-<button class="logout" onclick="logout()">Logout</button>
 <h2>CCR PEPP & Pawning Spiels</h2>
 
+<!-- Tabs -->
 <div class="tabs">
   <div class="tab active" data-tab="search">Search Spiels</div>
   <div class="tab" data-tab="money">Money Changer</div>
@@ -37,7 +290,7 @@ h2{text-align:center;margin-bottom:20px}
 </div>
 
 <div id="tabContent">
-  <!-- Search -->
+  <!-- Search Tab -->
   <div id="searchTab">
     <input type="text" id="search" placeholder="Search Spiel Name...">
     <div class="loader" id="loader">
@@ -47,13 +300,15 @@ h2{text-align:center;margin-bottom:20px}
     <div id="results" style="max-height:600px; overflow-y:auto;"></div>
   </div>
 
+  <!-- Money Changer -->
   <iframe id="moneyTab" src="https://jrguirjenccdpps-hue.github.io/Money-Changer/"
     style="width:100%; height:500px; display:none; border:none;"></iframe>
 
+  <!-- Palawan Gold -->
   <iframe id="goldTab" src="https://jrguirjenccdpps-hue.github.io/Palawan-Gold-Price/"
     style="width:100%; height:500px; display:none; border:none;"></iframe>
 
-<!-- Memo & Advisory -->
+  <!-- Memo & Advisory -->
   <div id="memoTab" style="display:none;">
     <!-- PDF Toolbar -->
     <div id="pdfToolbar">
@@ -83,16 +338,28 @@ h2{text-align:center;margin-bottom:20px}
         <div class="memo-sub">Effective June 1, 2023</div>
       </div>
     </div>
-<!-- LOGIN -->
-<div id="loginOverlay">
-  <div id="loginBox">
-    <h3>Login</h3>
-    <input id="user" placeholder="Username" style="width:100%;padding:10px;margin-bottom:6px">
-    <input id="pass" type="password" placeholder="Password" style="width:100%;padding:10px;margin-bottom:10px">
-    <button onclick="loginUser()" style="width:100%;padding:10px;background:#059669;color:#fff;border:none">Login</button>
-    <p id="msg" style="color:red"></p>
+
+    <div class="memo-card" onclick="showPDF('https://drive.google.com/file/d/1f_pHNFTgN3n4Af50V-IOI3PXUrb6_M5l/preview','GM 006, S2023 – International Remittance Partners')">
+      <div class="memo-icon">📄</div>
+      <div>
+        <div class="memo-title">GM 006, S2023 – International Remittance Partners</div>
+        <div class="memo-sub">Attachment</div>
+      </div>
+    </div>
+
+    <div class="memo-card" onclick="showPDF('https://drive.google.com/file/d/1BDeVgr4arXJmdgQoTIcRSZA3cSuBC_cX/preview','GM 020, S2023 – Western Union Registered Branches')">
+      <div class="memo-icon">📄</div>
+      <div>
+        <div class="memo-title">GM 020, S2023 – Western Union Registered Branches</div>
+        <div class="memo-sub">Attachment</div>
+      </div>
+    </div>
   </div>
 </div>
+
+<footer>
+  Form designed by CCR John Ramos and Ali Francisco
+</footer>
 
 <script>
 const tabs = document.querySelectorAll(".tab");
@@ -101,71 +368,144 @@ const moneyTab = document.getElementById("moneyTab");
 const goldTab = document.getElementById("goldTab");
 const memoTab = document.getElementById("memoTab");
 
-tabs.forEach(tab => tab.addEventListener("click",()=>{
-  tabs.forEach(t=>t.classList.remove("active")); tab.classList.add("active");
-  searchTab.style.display = tab.dataset.tab==="search"?"block":"none";
-  moneyTab.style.display = tab.dataset.tab==="money"?"block":"none";
-  goldTab.style.display = tab.dataset.tab==="gold"?"block":"none";
-  memoTab.style.display = tab.dataset.tab==="memo"?"block":"none";
-}));
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    tabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
 
-// LOGIN
-const loginOverlay = document.getElementById("loginOverlay");
-const userInput = document.getElementById("user");
-const passInput = document.getElementById("pass");
-const msg = document.getElementById("msg");
-let token = localStorage.getItem("token");
-let idleTimer;
+    searchTab.style.display = tab.dataset.tab === "search" ? "block" : "none";
+    moneyTab.style.display = tab.dataset.tab === "money" ? "block" : "none";
+    goldTab.style.display = tab.dataset.tab === "gold" ? "block" : "none";
+    memoTab.style.display = tab.dataset.tab === "memo" ? "block" : "none";
+  });
+});
 
-function showLogin(){ loginOverlay.classList.add("show"); }
-function hideLogin(){ loginOverlay.classList.remove("show"); }
+// PDF Viewer
+let currentScale = 1;
 
-function loginUser(){
-  fetch("https://script.google.com/macros/s/AKfycbz0ZAPevQzDFxmvuzH985Y7A1eNZj36NSVJNJWoj_Pw94yCCmjQkPEH_-OKK3nHtjE0Fw/exec",{
-    method:"POST",
-    headers:{ "Content-Type":"application/x-www-form-urlencoded" },
-    body:new URLSearchParams({action:"login",username:userInput.value,password:passInput.value})
-  })
-  .then(r=>r.json())
-  .then(d=>{
-    if(!d.success){ msg.textContent=d.message; return; }
-    localStorage.setItem("token","AUTHORIZED"); token="AUTHORIZED";
-    hideLogin(); document.querySelector(".logout").style.display="block"; resetIdle();
-  })
-  .catch(e=>{ msg.textContent="Network error"; console.error(e); });
+function showPDF(url, title) {
+  const viewer = document.getElementById("pdfViewer");
+  const toolbar = document.getElementById("pdfToolbar");
+  document.getElementById("pdfTitle").textContent = title;
+  viewer.src = url;
+  viewer.style.display = "block";
+  toolbar.style.display = "flex";
+  currentScale = 1;
+  viewer.style.transform = `scale(${currentScale})`;
 }
 
-function logout(){ localStorage.removeItem("token"); location.reload(); }
-function resetIdle(){ clearTimeout(idleTimer); idleTimer=setTimeout(logout,5*60*1000); }
-["mousemove","keydown","click","scroll"].forEach(e=>document.addEventListener(e,resetIdle));
+function zoomPDF(factor) {
+  const viewer = document.getElementById("pdfViewer");
+  currentScale *= factor;
+  viewer.style.transform = `scale(${currentScale})`;
+}
 
-if(!token){ showLogin(); } else { document.querySelector(".logout").style.display="block"; resetIdle(); }
+function closePDF() {
+  const viewer = document.getElementById("pdfViewer");
+  viewer.style.display = "none";
+  viewer.src = "";
+  document.getElementById("pdfToolbar").style.display = "none";
+}
 
-// SEARCH SPIELS
-const searchInput = document.getElementById("search");
-const loader = document.getElementById("loader");
-const results = document.getElementById("results");
-let typingTimer; const TYPING_DELAY=300;
+/* Live Search for Spiels */
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx8g5AF7YL_7DhPXPpAr1xcah8VuWRg8_J7hi8KAmFfZzia68Z5sIYyMNeCDdpAl0RFwA/exec";
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+let typingTimer;
+const TYPING_DELAY = 300;
 
-searchInput.addEventListener("input",()=>{ clearTimeout(typingTimer); typingTimer=setTimeout(searchSpiel,TYPING_DELAY); });
+document.getElementById("search").addEventListener("input", () => {
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(searchSpiel, TYPING_DELAY);
+});
 
-function searchSpiel(){
-  const q = searchInput.value.trim();
-  results.innerHTML=""; if(!q) return;
-  loader.style.display="block";
+function searchSpiel() {
+  const q = document.getElementById("search").value.trim();
+  const loader = document.getElementById("loader");
+  const results = document.getElementById("results");
+  results.innerHTML = "";
+  if (!q) {
+    loader.style.display = "none";
+    return;
+  }
 
-  fetch(`https://script.google.com/macros/s/AKfycbxJK6eIFjO5A1pq9Q_ATtILGoC0EMEgygzu_c6ruYLnxZw9NFbOtNiCgin43SBm_qb0Ow/exec?action=search&q=${encodeURIComponent(q)}`)
-    .then(r=>r.json())
-    .then(data=>{
-      loader.style.display="none";
-      if(!data||data.length===0){ results.innerHTML="<p>No results found.</p>"; return; }
-      data.forEach(item=>{
-        const card=document.createElement("div"); card.className="card";
-        card.innerHTML=`<b>${item.spiel}</b><br><br><b>English:</b><br>${item.english}<br><br><b>Tagalog:</b><br>${item.tagalog}`;
-        results.appendChild(card);
-      });
+  loader.style.display = "block";
+
+  fetch(`${WEB_APP_URL}?q=${encodeURIComponent(q)}`)
+    .then(res => res.json())
+    .then(data => {
+      loader.style.display = "none";
+      renderResults(data);
     })
-    .catch(err=>{ loader.style.display="none"; results.innerHTML="<p style='color:red;'>Error fetching spiels.</p>"; console.error(err); });
+    .catch(() => loader.style.display = "none");
+}
+
+function renderResults(data) {
+  const container = document.getElementById("results");
+  container.innerHTML = "";
+  if (!data || data.length === 0) {
+    container.innerHTML = "<p>No results found.</p>";
+    return;
+  }
+
+  data.sort((a, b) => favorites.includes(b.spiel) - favorites.includes(a.spiel));
+
+  data.forEach(item => {
+    const isFav = favorites.includes(item.spiel);
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="spiel-row">
+        <div class="spiel">${item.spiel}</div>
+        <div class="star ${isFav ? "active" : ""}" onclick="toggleFavorite('${item.spiel}')">★</div>
+      </div>
+      <div class="response-container">
+        <div class="response">
+          <div class="label">English Response</div>
+          <div class="copy-content">${formatText(item.english)}</div>
+          <div class="actions">
+            <button class="copy-btn" onclick="copyOnly(this)">Copy English</button>
+          </div>
+          <div class="copied">Copied!</div>
+        </div>
+        <div class="response">
+          <div class="label">Tagalog Response</div>
+          <div class="copy-content">${formatText(item.tagalog)}</div>
+          <div class="actions">
+            <button class="copy-btn" onclick="copyOnly(this)">Copy Tagalog</button>
+          </div>
+          <div class="copied">Copied!</div>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function copyOnly(btn) {
+  const content = btn.closest(".response").querySelector(".copy-content");
+  const range = document.createRange();
+  range.selectNodeContents(content);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  document.execCommand("copy");
+  selection.removeAllRanges();
+
+  const copied = btn.closest(".response").querySelector(".copied");
+  copied.style.display = "block";
+  setTimeout(() => copied.style.display = "none", 1000);
+}
+
+function toggleFavorite(spiel) {
+  favorites = favorites.includes(spiel) ? favorites.filter(f => f !== spiel) : [...favorites, spiel];
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+  searchSpiel();
+}
+
+function formatText(text) {
+  if (!text) return "";
+  return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
 }
 </script>
 
