@@ -28,7 +28,7 @@ h2 { text-align: center; margin-bottom: 20px; }
 .tabs { display: flex; gap: 10px; margin-bottom: 10px; }
 .tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; background: #e5f7ed; font-weight: bold; transition: background 0.2s; }
 .tab.active { background: var(--green-main); color: white; }
-#tabContent { margin-top: 10px; min-height: 300px; overflow-y: auto; }
+#tabContent { margin-top: 10px; min-height: 300px; }
 
 /* Search Input */
 #search { width: 100%; padding: 12px; font-size: 15px; border-radius: 10px; border: 1px solid #a7f3d0; margin-bottom: 10px; }
@@ -104,10 +104,18 @@ h2 { text-align: center; margin-bottom: 20px; }
   transition: opacity 0.3s ease;
 }
 #pdfModal.show { opacity: 1; }
-
 #pdfModal iframe { width:90%; max-width:800px; height:80vh; border:none; border-radius:10px; }
 #pdfToolbarModal { display:flex; justify-content:space-between; width:90%; max-width:800px; margin-bottom:5px; }
 #pdfToolbarModal button { padding:5px 8px; margin-left:5px; cursor:pointer; }
+
+/* Full-height iframe for Money Changer & Palawan Gold */
+#moneyTab, #goldTab {
+  width: 100%;
+  height: calc(100vh - 160px); /* adjust 160px for header + tabs + padding */
+  border: none;
+  border-radius: 10px;
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -134,10 +142,10 @@ h2 { text-align: center; margin-bottom: 20px; }
   </div>
 
   <!-- Money Changer -->
-  <iframe id="moneyTab" src="https://jrguirjenccdpps-hue.github.io/Money-Changer/" style="display:none;"></iframe>
+  <iframe id="moneyTab" src="https://jrguirjenccdpps-hue.github.io/Money-Changer/"></iframe>
 
   <!-- Palawan Gold -->
-  <iframe id="goldTab" src="https://jrguirjenccdpps-hue.github.io/Palawan-Gold-Price/" style="display:none;"></iframe>
+  <iframe id="goldTab" src="https://jrguirjenccdpps-hue.github.io/Palawan-Gold-Price/"></iframe>
 
   <!-- MEMO TAB -->
   <div id="memoTab" style="display:none">
