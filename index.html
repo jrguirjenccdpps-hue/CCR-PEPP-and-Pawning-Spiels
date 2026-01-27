@@ -128,7 +128,7 @@ h3.tagline { text-align: center; margin-bottom: 20px; font-weight: normal; color
 <div class="tabs">
   <div class="tab active" data-tab="search">Search Spiels</div>
   <div class="tab" data-tab="money">Money Changer</div>
-  <div class="tab" data-tab="gold">Palawan Gold</div>
+  <div class="tab" data-tab="gold">Palawan Gold and Appraisal Rate</div>
   <div class="tab" data-tab="memo">Memo & Advisory</div>
   <div class="tab" data-tab="sms">Outbound SMS</div>
 </div>
@@ -147,59 +147,82 @@ h3.tagline { text-align: center; margin-bottom: 20px; font-weight: normal; color
   <!-- Money Changer -->
   <iframe id="moneyTab" src="https://jrguirjenccdpps-hue.github.io/Money-Changer/"></iframe>
 
-  <!-- Palawan Gold and Appraisal Rates -->
+  <!-- Palawan Gold and Appraisal Rate -->
   <iframe id="goldTab" src="https://jrguirjenccdpps-hue.github.io/Palawan-Gold-Price/"></iframe>
 
   <!-- Outbound SMS -->
   <iframe id="smsTab" src="https://jrguirjenccdpps-hue.github.io/CCR-Outbound-SMS/"></iframe>
 
-  <!-- MEMO TAB -->
-  <div id="memoTab" style="display:none">
-    <div class="memo-card" onclick="showPDF(
-      'https://drive.google.com/file/d/1k-IFfleDsUp4SGbqmzLWN6HcyRS37sbr/view',
-      'Annex C – Guidelines for Authorized Representatives'
-    )">
-      <div class="memo-icon">📄</div>
-      <div>
-        <div class="memo-title">Annex C – Guidelines for Authorized Representatives</div>
-        <div class="memo-sub">Effective Sept 1, 2023</div>
-      </div>
+ <!-- MEMO TAB -->
+<div id="memoTab" style="display:none">
+  <div class="memo-card" onclick="showPDF(
+    'https://drive.google.com/file/d/1k-IFfleDsUp4SGbqmzLWN6HcyRS37sbr/view',
+    'Annex C – Guidelines for Authorized Representatives'
+  )">
+    <div class="memo-icon">📄</div>
+    <div>
+      <div class="memo-title">Annex C – Guidelines for Authorized Representatives</div>
+      <div class="memo-sub">Effective Sept 1, 2023</div>
     </div>
+  </div>
 
-    <div class="memo-card" onclick="showPDF(
-      'https://drive.google.com/file/d/1xCpK6LulqyFfW1wC6U5rcuy6Alz0RaJ9/view',
-      'Annex D – ID Requirements'
-    )">
-      <div class="memo-icon">📄</div>
-      <div>
-        <div class="memo-title">Annex D – ID Requirements</div>
-        <div class="memo-sub">Effective June 1, 2023</div>
-      </div>
+  <div class="memo-card" onclick="showPDF(
+    'https://drive.google.com/file/d/1xCpK6LulqyFfW1wC6U5rcuy6Alz0RaJ9/view',
+    'Annex D – ID Requirements'
+  )">
+    <div class="memo-icon">📄</div>
+    <div>
+      <div class="memo-title">Annex D – ID Requirements</div>
+      <div class="memo-sub">Effective June 1, 2023</div>
     </div>
+  </div>
 
-    <div class="memo-card" onclick="showPDF(
-      'https://drive.google.com/file/d/1f_pHNFTgN3n4Af50V-IOI3PXUrb6_M5l/view',
-      'GM 006, S2023 – International Remittance Partners'
-    )">
-      <div class="memo-icon">📄</div>
-      <div>
-        <div class="memo-title">GM 006, S2023 – International Remittance Partners</div>
-        <div class="memo-sub">Attachment</div>
-      </div>
+  <div class="memo-card" onclick="showPDF(
+    'https://drive.google.com/file/d/1f_pHNFTgN3n4Af50V-IOI3PXUrb6_M5l/view',
+    'GM 006, S2023 – International Remittance Partners'
+  )">
+    <div class="memo-icon">📄</div>
+    <div>
+      <div class="memo-title">GM 006, S2023 – International Remittance Partners</div>
+      <div class="memo-sub">Attachment</div>
     </div>
+  </div>
 
-    <div class="memo-card" onclick="showPDF(
-      'https://drive.google.com/file/d/1BDeVgr4arXJmdgQoTIcRSZA3cSuBC_cX/view',
-      'GM 020, S2023 – Western Union Registered Branches'
-    )">
-      <div class="memo-icon">📄</div>
-      <div>
-        <div class="memo-title">GM 020, S2023 – Western Union Registered Branches</div>
-        <div class="memo-sub">Attachment</div>
-      </div>
+  <div class="memo-card" onclick="showPDF(
+    'https://drive.google.com/file/d/1BDeVgr4arXJmdgQoTIcRSZA3cSuBC_cX/view',
+    'GM 020, S2023 – Western Union Registered Branches'
+  )">
+    <div class="memo-icon">📄</div>
+    <div>
+      <div class="memo-title">GM 020, S2023 – Western Union Registered Branches</div>
+      <div class="memo-sub">Attachment</div>
+    </div>
+  </div>
+
+  <!-- NEW MEMOS ADDED -->
+  <div class="memo-card" onclick="showPDF(
+    'https://drive.google.com/file/d/1JVVGoaySe7UgQtXj85QWUqXDtYrpfUmf/view?usp=drivesdk',
+    'EMERALD NEW UPDATED HELPFILE_JUNE 2027'
+  )">
+    <div class="memo-icon">📄</div>
+    <div>
+      <div class="memo-title">EMERALD NEW UPDATED HELPFILE_JUNE 2027</div> 
+      <div class="memo-sub">Updated June 2027</div>
+    </div>
+  </div>
+
+  <div class="memo-card" onclick="showPDF(
+    'https://drive.google.com/file/d/1e9KQKPc7Vsxi9LMxhzhqgeVIcK7JLXO0/view?usp=drivesdk',
+    'Marketing Advisory No. 003, S2026 Virtual Code – 500 Off on Sangla Interest 27'
+  )">
+    <div class="memo-icon">📄</div>
+    <div>
+      <div class="memo-title">Marketing Advisory No. 003, S2026 Virtual Code – 500 Off on Sangla Interest 27</div>
+      <div class="memo-sub">Attachment</div>
     </div>
   </div>
 </div>
+
 
 <!-- LOGIN -->
 <div id="loginOverlay">
