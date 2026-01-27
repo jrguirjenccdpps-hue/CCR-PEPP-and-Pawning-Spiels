@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CCR PEPP & Pawning Spiels</title>
+<title>CCR Nav360 – Finding the best solutions, effortlessly</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 :root {
@@ -22,10 +22,11 @@ body {
   margin:0;
 }
 
-h2 { text-align: center; margin-bottom: 20px; }
+h2 { text-align: center; margin-bottom: 5px; }
+h3.tagline { text-align: center; margin-bottom: 20px; font-weight: normal; color: #047857; font-size: 1rem; }
 
 /* Tabs */
-.tabs { display: flex; gap: 10px; margin-bottom: 10px; }
+.tabs { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
 .tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; background: #e5f7ed; font-weight: bold; transition: background 0.2s; }
 .tab.active { background: var(--green-main); color: white; }
 #tabContent { margin-top: 10px; min-height: 300px; }
@@ -108,10 +109,10 @@ h2 { text-align: center; margin-bottom: 20px; }
 #pdfToolbarModal { display:flex; justify-content:space-between; width:90%; max-width:800px; margin-bottom:5px; }
 #pdfToolbarModal button { padding:5px 8px; margin-left:5px; cursor:pointer; }
 
-/* Full-height iframe for Money Changer & Palawan Gold */
-#moneyTab, #goldTab {
+/* Full-height iframe for Money Changer, Palawan Gold & SMS */
+#moneyTab, #goldTab, #smsTab {
   width: 100%;
-  height: calc(100vh - 160px); /* adjust 160px for header + tabs + padding */
+  height: calc(100vh - 160px);
   border: none;
   border-radius: 10px;
   display: none;
@@ -121,13 +122,15 @@ h2 { text-align: center; margin-bottom: 20px; }
 <body>
 
 <button class="logout" onclick="logout()">Logout</button>
-<h2>CCR PEPP & Pawning Spiels</h2>
+<h2>CCR Nav360</h2>
+<h3 class="tagline">Finding the best solutions, effortlessly</h3>
 
 <div class="tabs">
   <div class="tab active" data-tab="search">Search Spiels</div>
   <div class="tab" data-tab="money">Money Changer</div>
   <div class="tab" data-tab="gold">Palawan Gold</div>
   <div class="tab" data-tab="memo">Memo & Advisory</div>
+  <div class="tab" data-tab="sms">Outbound SMS</div>
 </div>
 
 <div id="tabContent">
@@ -146,6 +149,9 @@ h2 { text-align: center; margin-bottom: 20px; }
 
   <!-- Palawan Gold -->
   <iframe id="goldTab" src="https://jrguirjenccdpps-hue.github.io/Palawan-Gold-Price/"></iframe>
+
+  <!-- Outbound SMS -->
+  <iframe id="smsTab" src="https://jrguirjenccdpps-hue.github.io/CCR-Outbound-SMS/"></iframe>
 
   <!-- MEMO TAB -->
   <div id="memoTab" style="display:none">
@@ -218,13 +224,20 @@ h2 { text-align: center; margin-bottom: 20px; }
   <iframe id="pdfFrame"></iframe>
 </div>
 
+<!-- FOOTER -->
+<footer style="text-align:center; margin-top:20px; font-size:0.85rem; color:#065f46;">
+  Designed By: CCR Ali Francisco and John Ramos
+</footer>
+
 <script>
+// --- JS remains the same ---
 const WEB_APP_URL="https://script.google.com/macros/s/AKfycbzP86WpTYekm5GjJTcoXHpDk1c6dWB3ygFOit4HVrr1lkQuZeeaMEuNRdSXJAdJbaQLZg/exec";
 
 const tabs=document.querySelectorAll(".tab");
 const searchTab=document.getElementById("searchTab");
 const moneyTab=document.getElementById("moneyTab");
 const goldTab=document.getElementById("goldTab");
+const smsTab=document.getElementById("smsTab");
 const memoTab=document.getElementById("memoTab");
 const loader=document.getElementById("loader");
 const results=document.getElementById("results");
@@ -238,7 +251,7 @@ const pdfFrame=document.getElementById("pdfFrame");
 const pdfTitleModal=document.getElementById("pdfTitleModal");
 let idleTimer;
 
-// ===== LOGIN =====
+// LOGIN
 function loginUser(){
   msg.textContent="";
   fetch(WEB_APP_URL,{
@@ -255,7 +268,7 @@ function loginUser(){
   }).catch(()=>{msg.textContent="Server error";});
 }
 
-// ===== SEARCH SPIELS =====
+// SEARCH SPIELS
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 let typingTimer;
 const TYPING_DELAY = 300;
@@ -339,7 +352,7 @@ function formatText(text){
   return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
 }
 
-// ===== TABS =====
+// TABS
 tabs.forEach(t=>{
   t.onclick=()=>{
     tabs.forEach(x=>x.classList.remove("active"));
@@ -348,15 +361,16 @@ tabs.forEach(t=>{
     moneyTab.style.display = t.dataset.tab==="money"?"block":"none";
     goldTab.style.display = t.dataset.tab==="gold"?"block":"none";
     memoTab.style.display = t.dataset.tab==="memo"?"block":"none";
+    smsTab.style.display = t.dataset.tab==="sms"?"block":"none";
   };
 });
 
-// ===== LOGOUT & IDLE =====
+// LOGOUT & IDLE
 function logout(){ location.reload(); }
 function resetIdle(){ clearTimeout(idleTimer); idleTimer=setTimeout(logout,5*60*1000); }
 ["mousemove","keydown","click","scroll"].forEach(e=>document.addEventListener(e,resetIdle));
 
-// ===== PDF MODAL =====
+// PDF MODAL
 function showPDF(url, title="") {
   pdfFrame.src = url.replace("/view","/preview");
   pdfTitleModal.textContent = title;
@@ -365,14 +379,9 @@ function showPDF(url, title="") {
 }
 function closePDF() {
   pdfModal.classList.remove("show");
-  setTimeout(()=>{
-    pdfModal.style.display="none";
-    pdfFrame.src="";
-  },400);
+  setTimeout(()=>{ pdfModal.style.display="none"; pdfFrame.src=""; },400);
 }
-function openNewTab() {
-  if(pdfFrame.src) window.open(pdfFrame.src,"_blank");
-}
+function openNewTab() { if(pdfFrame.src) window.open(pdfFrame.src,"_blank"); }
 </script>
 </body>
 </html>
